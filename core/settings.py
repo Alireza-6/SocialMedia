@@ -8,10 +8,13 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-LOCAL_APPS = []
+LOCAL_APPS = [
+    'blog.apps.BlogConfig',
+]
 
 THIRD_PARTY_APPS = [
     'rest_framework',
+    'drf_yasg',
 ]
 
 INSTALLED_APPS = [
