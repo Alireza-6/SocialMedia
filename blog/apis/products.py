@@ -3,8 +3,8 @@ from rest_framework.views import APIView
 from rest_framework import serializers, status
 
 from blog.models import Product
-from blog.selectors.products import get_products
-from blog.services.products import create_product
+from blog.selectors import get_products
+from blog.services import create_product
 
 
 class ProductApi(APIView):
