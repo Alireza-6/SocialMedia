@@ -1,4 +1,5 @@
 from django.core.validators import MinLengthValidator
+from drf_spectacular.utils import extend_schema
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import serializers, status
@@ -10,20 +11,22 @@ from users.validators import letter_validator, number_validator, special_charact
 
 
 class ProfileApi(APIView):
-    class OutputSerializer(serializers.ModelSerializer):
+    class GetProfileOutputSerializer(serializers.ModelSerializer):
         class Meta:
             model = Profile
             exclude = ["user"]
 
+    @extend_schema(responses=GetProfileOutputSerializer)
     def get(self, request):
         res = get_profile(user=request.user)
         return Response(
-            self.OutputSerializer(res, context={"request": request}, many=True).data, status=status.HTTP_200_OK
+            self.GetProfileOutputSerializer(res, context={"request": request}, many=True).data,
+            status=status.HTTP_200_OK
         )
 
 
 class RegisterApi(APIView):
-    class InputSerializer(serializers.Serializer):
+    class RegisterInputSerializer(serializers.Serializer):
         email = serializers.EmailField()
         bio = serializers.CharField(max_length=1000, required=False)
         password = serializers.CharField(
@@ -49,13 +52,14 @@ class RegisterApi(APIView):
                 raise serializers.ValidationError("Password Is Not Equal To Confirm Password")
             return data
 
-    class OutputSerializer(serializers.ModelSerializer):
+    class RegisterOutputSerializer(serializers.ModelSerializer):
         class Meta:
             model = BaseUser
             fields = ["email", "created_at", "updated_at"]
 
+    @extend_schema(request=RegisterInputSerializer, responses=RegisterOutputSerializer)
     def post(self, request):
-        payload = self.InputSerializer(data=request.data)
+        payload = self.RegisterInputSerializer(data=request.data)
         payload.is_valid(raise_exception=True)
         try:
             res = register(
@@ -65,4 +69,6 @@ class RegisterApi(APIView):
             )
         except Exception as ex:
             Response(f"Database Error {ex}", status=status.HTTP_400_BAD_REQUEST)
-        return Response(self.OutputSerializer(res, context={"request": request}).data, status=status.HTTP_201_CREATED)
+        return Response(
+            self.RegisterOutputSerializer(res, context={"request": request}).data, status=status.HTTP_201_CREATED
+        )
