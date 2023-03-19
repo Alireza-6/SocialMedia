@@ -6,6 +6,7 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 v1_urlpatterns = [
     path('products/', include('blog.apis.urls')),
     path('users/', include('users.apis.urls')),
+    path('jwt/', include('authentication.urls')),
 ]
 
 urlpatterns = [

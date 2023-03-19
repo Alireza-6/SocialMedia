@@ -1,5 +1,3 @@
-from django.db.models import QuerySet
-
 from users.models import BaseUser, Profile
 
 

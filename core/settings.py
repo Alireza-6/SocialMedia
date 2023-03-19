@@ -1,3 +1,4 @@
+from datetime import timedelta
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -11,11 +12,13 @@ ALLOWED_HOSTS = []
 LOCAL_APPS = [
     'blog.apps.BlogConfig',
     'users.apps.UsersConfig',
+    'authentication.apps.AuthenticationConfig',
 ]
 
 THIRD_PARTY_APPS = [
     'rest_framework',
     'drf_spectacular',
+    'rest_framework_simplejwt',
 ]
 
 INSTALLED_APPS = [
@@ -102,4 +105,12 @@ SPECTACULAR_SETTINGS = {
 
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1)
 }

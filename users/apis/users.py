@@ -4,23 +4,25 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import serializers, status
 
+from core.mixins import ApiAuthMixin
 from users.models import BaseUser, Profile
 from users.selectors import get_profile
 from users.services import register
 from users.validators import letter_validator, number_validator, special_character_validator
 
 
-class ProfileApi(APIView):
+class ProfileApi(ApiAuthMixin, APIView):
     class GetProfileOutputSerializer(serializers.ModelSerializer):
         class Meta:
             model = Profile
-            exclude = ["user"]
+            exclude = ("user",)
 
     @extend_schema(responses=GetProfileOutputSerializer)
     def get(self, request):
+        print(request.user)
         res = get_profile(user=request.user)
         return Response(
-            self.GetProfileOutputSerializer(res, context={"request": request}, many=True).data,
+            self.GetProfileOutputSerializer(res, context={"request": request}).data,
             status=status.HTTP_200_OK
         )
 
