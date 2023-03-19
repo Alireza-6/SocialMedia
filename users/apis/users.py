@@ -5,7 +5,7 @@ from rest_framework import serializers, status
 
 from users.models import BaseUser, Profile
 from users.selectors import get_profile
-from users.services import create_user
+from users.services import register
 from users.validators import letter_validator, number_validator, special_character_validator
 
 
@@ -25,6 +25,7 @@ class ProfileApi(APIView):
 class RegisterApi(APIView):
     class InputSerializer(serializers.Serializer):
         email = serializers.EmailField()
+        bio = serializers.CharField(max_length=1000, required=False)
         password = serializers.CharField(
             validators=[
                 letter_validator,
@@ -38,6 +39,7 @@ class RegisterApi(APIView):
         def validate_email(self, email):
             if BaseUser.objects.filter(email=email).exists():
                 raise serializers.ValidationError("Email Already Token")
+            return email
 
         def validate(self, data):
             if not data.get("password") or not data.get("confirm_password"):
@@ -45,19 +47,21 @@ class RegisterApi(APIView):
 
             if data.get("password") != data.get("confirm_password"):
                 raise serializers.ValidationError("Password Is Not Equal To Confirm Password")
+            return data
 
     class OutputSerializer(serializers.ModelSerializer):
         class Meta:
             model = BaseUser
-            fields = ["email"]
+            fields = ["email", "created_at", "updated_at"]
 
     def post(self, request):
         payload = self.InputSerializer(data=request.data)
         payload.is_valid(raise_exception=True)
         try:
-            res = create_user(
+            res = register(
                 email=payload.validated_data.get("email"),
                 password=payload.validated_data.get("password"),
+                bio=payload.validated_data.get("bio"),
             )
         except Exception as ex:
             Response(f"Database Error {ex}", status=status.HTTP_400_BAD_REQUEST)

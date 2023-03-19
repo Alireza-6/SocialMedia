@@ -17,6 +17,7 @@ schema_view = get_schema_view(
 
 v1_urlpatterns = [
     path('products/', include('blog.apis.urls')),
+    path('users/', include('users.apis.urls')),
 ]
 urlpatterns = [
     path("admin/", admin.site.urls),
