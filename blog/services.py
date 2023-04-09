@@ -1,7 +1,8 @@
 from django.db.models import QuerySet
 
-from blog.models import Product
+from blog.models import Post
+from users.models import BaseUser
 
 
-def create_product(*, name: str) -> QuerySet(Product):
-    return Product.objects.create(name=name)
+def create_post(*, user: BaseUser, title: str, content: str) -> QuerySet[Post]:
+    ...

@@ -1,7 +1,12 @@
 from django.db.models import QuerySet
 
-from blog.models import Product
+from blog.models import Post
+from users.models import BaseUser
 
 
-def get_products() -> QuerySet(Product):
-    return Product.objects.all()
+def post_list(*, filters=None, user: BaseUser, self_include: bool = True) -> QuerySet[Post]:
+    ...
+
+
+def post_detail(*, slug: str, user: BaseUser, self_include: bool = True) -> Post:
+    ...
