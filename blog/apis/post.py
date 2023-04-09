@@ -49,8 +49,8 @@ class PostApi(ApiAuthMixin, APIView):
                 title=serializer.validated_data.get("title"),
                 content=serializer.validated_data.get("content")
             )
-        except Exception:
-            return Response({"detail": f"Database Error - " + str(Exception)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as ex:
+            return Response({"detail": f"Database Error - " + str(ex)}, status=status.HTTP_400_BAD_REQUEST)
         return Response(self.OutputSerializer(query, context={"request": request}).data)
 
     @extend_schema(parameters=[FilterSerializer], responses=OutputSerializer)
@@ -59,8 +59,8 @@ class PostApi(ApiAuthMixin, APIView):
         filters_serializer.is_valid(raise_exception=True)
         try:
             query = post_list(filters=filters_serializer.validated_data, user=request.user)
-        except Exception:
-            return Response({"detail": f"Filter Error - " + str(Exception)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as ex:
+            return Response({"detail": f"Filter Error - " + str(ex)}, status=status.HTTP_400_BAD_REQUEST)
         return Response(self.OutputSerializer(query, context={"request": request}).data)
 
 
@@ -79,6 +79,6 @@ class PostDetailApi(ApiAuthMixin, APIView):
     def get(self, request, slug):
         try:
             query = post_detail(slug=slug, user=request.user)
-        except Exception:
-            return Response({"detail": f"Filter Error - " + str(Exception)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as ex:
+            return Response({"detail": f"Filter Error - " + str(ex)}, status=status.HTTP_400_BAD_REQUEST)
         return Response(self.OutputSerializer(query).data)
