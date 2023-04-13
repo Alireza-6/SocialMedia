@@ -3,6 +3,7 @@ from django.urls import path
 from blog.apis.post import PostApi, PostDetailApi
 from blog.apis.subscription import SubscribeApi, SubscribeDetailApi
 
+app_name = "blog"
 urlpatterns = [
     path("post/", PostApi.as_view(), name="post"),
     path("post/<slug:slug>", PostDetailApi.as_view(), name="post_detail"),
