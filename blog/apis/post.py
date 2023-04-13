@@ -23,7 +23,7 @@ class PostApi(ApiAuthMixin, APIView):
         content = serializers.CharField(max_length=1000)
         title = serializers.CharField(max_length=100)
 
-    class OutputSerializer(serializers.Serializer):
+    class OutputSerializer(serializers.ModelSerializer):
         author = serializers.SerializerMethodField("get_author")
         url = serializers.SerializerMethodField("get_url")
 
@@ -36,8 +36,8 @@ class PostApi(ApiAuthMixin, APIView):
 
         def get_url(self, post):
             request = self.context.get("request")
-            path = reverse("api:blog:post_detail", args=(post.slug,))
-            return request.build_absolute_url(path)
+            path = reverse("blog:post_detail", args=(post.slug,))
+            return request.build_absolute_uri(path)
 
     @extend_schema(request=InputSerializer, responses=OutputSerializer)
     def post(self, request):
