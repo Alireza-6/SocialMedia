@@ -1,9 +1,15 @@
+import os
 from datetime import timedelta
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "django-insecure-27)q)+6p)uwy+vz7r4yyyyy!a9p0+hs^9f(524eoh*uchnv2=d"
+dotenv_path = os.path.join(BASE_DIR, '.env')
+load_dotenv(dotenv_path)
+
+SECRET_KEY = str(os.getenv('SECRET_KEY'))
 
 DEBUG = True
 
@@ -68,7 +74,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'SocialMedia',
         'USER': 'alireza',
-        'PASSWORD': '22031379',
+        'PASSWORD': str(os.getenv('DATABASE_PASSWORD')),
         'HOST': '127.0.0.1',
         'PORT': '5432',
     }
