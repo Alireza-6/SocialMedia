@@ -61,7 +61,7 @@ class PostApi(ApiAuthMixin, APIView):
             query = post_list(filters=filters_serializer.validated_data, user=request.user)
         except Exception as ex:
             return Response({"detail": f"Filter Error - " + str(ex)}, status=status.HTTP_400_BAD_REQUEST)
-        return Response(self.OutputSerializer(query, context={"request": request}).data)
+        return Response(self.OutputSerializer(query, context={"request": request}, many=True).data)
 
 
 class PostDetailApi(ApiAuthMixin, APIView):

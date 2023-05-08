@@ -36,7 +36,7 @@ class SubscribeApi(ApiAuthMixin, APIView):
     def get(self, request):
         user = request.user
         query = get_subscribers(user=user)
-        return Response(self.OutPutSubSerializer(query, context={"request": request}).data)
+        return Response(self.OutPutSubSerializer(query, context={"request": request}, many=True).data)
 
     @extend_schema(request=InputSubSerializer, responses=OutPutSubSerializer)
     def post(self, request):
