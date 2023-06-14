@@ -19,6 +19,7 @@ LOCAL_APPS = [
     'blog.apps.BlogConfig',
     'users.apps.UsersConfig',
     'authentication.apps.AuthenticationConfig',
+    'tasks.apps.TasksConfig',
 ]
 
 THIRD_PARTY_APPS = [
@@ -26,6 +27,8 @@ THIRD_PARTY_APPS = [
     'drf_spectacular',
     'rest_framework_simplejwt',
     'django_filters',
+    'django_celery_beat',
+    'celery',
 ]
 
 INSTALLED_APPS = [
@@ -125,7 +128,14 @@ SIMPLE_JWT = {
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "LOCATION": "redis://localhost:6379",
     }
 }
 CACHE_TTL = 60 * 15
+
+CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672//'
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_TIMEZONE = 'UTC'
+CELERY_TASK_SOFT_TIME_LIMIT = 20
+CELERY_TASK_TIME_LIMIT = 30
+CELERY_TASK_MAX_RETRIES = 3

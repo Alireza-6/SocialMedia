@@ -20,12 +20,12 @@ def count_posts(*, user: BaseUser) -> int:
 
 
 def cache_profile(*, user: BaseUser) -> None:
-    profiles = {
+    profile = {
         "posts_count": count_posts(user=user),
-        "follower_count": count_follower(user=user),
-        "following_count": count_following(user=user),
+        "subscribers_count": count_follower(user=user),
+        "subscriptions_count": count_following(user=user),
     }
-    cache.set(f"profile_{user}", profiles, timeout=None)
+    cache.set(f"profile_{user}", profile, timeout=None)
 
 
 @transaction.atomic

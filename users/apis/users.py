@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from django.core.validators import MinLengthValidator
 from drf_spectacular.utils import extend_schema
 from rest_framework.response import Response
@@ -16,11 +17,25 @@ class ProfileApi(ApiAuthMixin, APIView):
     class GetProfileOutputSerializer(serializers.ModelSerializer):
         class Meta:
             model = Profile
-            exclude = ("user",)
+            fields = ("bio", "posts_count", "subscriber_count", "subscription_count")
+
+        class ProfileApi(ApiAuthMixin, APIView):
+            class OutPutSerializer(serializers.ModelSerializer):
+                class Meta:
+                    model = Profile
+                    fields = ("bio", "posts_count", "subscriber_count", "subscription_count")
+
+                def to_representation(self, instance):
+                    rep = super().to_representation(instance)
+                    cache_profile = cache.get(f"profile_{instance.user}", {})
+                    if cache_profile:
+                        rep["posts_count"] = cache_profile.get("posts_count")
+                        rep["subscriber_count"] = cache_profile.get("subscribers_count")
+                        rep["subscription_count"] = cache_profile.get("subscriptions_count")
+                    return rep
 
     @extend_schema(responses=GetProfileOutputSerializer)
     def get(self, request):
-        print(request.user)
         res = get_profile(user=request.user)
         return Response(
             self.GetProfileOutputSerializer(res, context={"request": request}).data,
